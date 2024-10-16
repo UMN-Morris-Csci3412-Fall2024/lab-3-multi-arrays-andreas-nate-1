@@ -9,6 +9,11 @@ int* array_merge(int num_arrays, int* sizes, int** values) {
         total_size += sizes[i];
     }
 
+    // Handle the case where there are no elements in any of the arrays
+    if (total_size == 0) {
+        return NULL;
+    }
+
     // Allocate memory for the merged array
     int *merged_array = (int *)malloc(total_size * sizeof(int));
     if (merged_array == NULL) {
