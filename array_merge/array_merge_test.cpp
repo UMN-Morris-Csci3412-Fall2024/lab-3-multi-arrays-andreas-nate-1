@@ -1,23 +1,22 @@
 #include <gtest/gtest.h>
-
 #include "array_merge.h"
 
 void arrays_match(int size, int a[], int b[]) {
   int i;
-
-  for (i=0; i<size; ++i) {
+  for (i = 0; i < size; ++i) {
     ASSERT_EQ(b[i], a[i]);
   }
 }
 
 TEST(ArrayMerge, Handle_empty_list) {
-  int* a[] = { };
-  int sizes[] = { };
+  int* a[] = {};
+  int sizes[] = {};
   int expected[] = { 0 };
   int* result;
 
-  result = array_merge(0, sizes,  a);
+  result = array_merge(0, sizes, a);
   arrays_match(1, result, expected);
+  free(result); // Free the result array
 }
 
 TEST(ArrayMerge, Handle_singleton_list) {
@@ -30,6 +29,7 @@ TEST(ArrayMerge, Handle_singleton_list) {
 
   result = array_merge(num_arrays, sizes, a);
   arrays_match(2, result, expected);
+  free(result); // Free the result array
 }
 
 TEST(ArrayMerge, Handle_one_longer_list) {
@@ -42,6 +42,7 @@ TEST(ArrayMerge, Handle_one_longer_list) {
 
   result = array_merge(num_arrays, sizes, a);
   arrays_match(8, result, expected);
+  free(result); // Free the result array
 }
 
 TEST(ArrayMerge, Handle_multiple_copies_of_longer_list) {
@@ -54,6 +55,7 @@ TEST(ArrayMerge, Handle_multiple_copies_of_longer_list) {
 
   result = array_merge(num_arrays, sizes, a);
   arrays_match(8, result, expected);
+  free(result); // Free the result array
 }
 
 TEST(ArrayMerge, Handle_multiple_copies_of_longer_list_different_orders) {
@@ -67,7 +69,8 @@ TEST(ArrayMerge, Handle_multiple_copies_of_longer_list_different_orders) {
   int* result;
 
   result = array_merge(num_arrays, sizes, a);
-  arrays_match(8, result, expected);
+  arrays_match(11, result, expected);
+  free(result); // Free the result array
 }
 
 TEST(ArrayMerge, Handle_different_sizes) {
@@ -78,16 +81,22 @@ TEST(ArrayMerge, Handle_different_sizes) {
   int* result;
   int i, j;
 
-  for (i=0; i<num_arrays; ++i) {
+  for (i = 0; i < num_arrays; ++i) {
     sizes[i] = i;
-    a[i] = (int*) calloc(i, sizeof(int));
-    for (j=0; j<i; ++j) {
+    a[i] = (int*)calloc(i, sizeof(int));
+    for (j = 0; j < i; ++j) {
       a[i][j] = j;
     }
   }
 
   result = array_merge(num_arrays, sizes, a);
   arrays_match(11, result, expected);
+  free(result); // Free the result array
+
+  // Free the allocated arrays
+  for (i = 0; i < num_arrays; ++i) {
+    free(a[i]);
+  }
 }
 
 TEST(ArrayMerge, Handle_different_sizes_reversed) {
@@ -98,16 +107,22 @@ TEST(ArrayMerge, Handle_different_sizes_reversed) {
   int* result;
   int i, j;
 
-  for (i=num_arrays-1; i>=0; --i) {
+  for (i = num_arrays - 1; i >= 0; --i) {
     sizes[i] = i;
-    a[i] = (int*) calloc(i, sizeof(int));
-    for (j=0; j<i; ++j) {
+    a[i] = (int*)calloc(i, sizeof(int));
+    for (j = 0; j < i; ++j) {
       a[i][j] = j;
     }
   }
 
   result = array_merge(num_arrays, sizes, a);
   arrays_match(11, result, expected);
+  free(result); // Free the result array
+
+  // Free the allocated arrays
+  for (i = 0; i < num_arrays; ++i) {
+    free(a[i]);
+  }
 }
 
 int main(int argc, char* argv[]) {
