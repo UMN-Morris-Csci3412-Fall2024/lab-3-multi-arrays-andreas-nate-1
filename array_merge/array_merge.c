@@ -26,6 +26,7 @@ int* array_merge(int num_arrays, int* sizes, int** values) {
 
     // Handle the case where there are no elements in any of the arrays
     if (total_size == 0) {
+        printf("Total size is 0, returning NULL\n");
         return NULL;
     }
 
