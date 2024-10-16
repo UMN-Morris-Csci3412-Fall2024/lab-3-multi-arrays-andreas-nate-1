@@ -1,6 +1,4 @@
-#include "array_merge.h"
-#include "../mergesort/mergesort.h"
-#include <stdlib.h>
+#include <stdlib.h> // Include this header for NULL and malloc
 
 int* array_merge(int num_arrays, int* sizes, int** values) {
     // Calculate the total number of elements in all arrays
