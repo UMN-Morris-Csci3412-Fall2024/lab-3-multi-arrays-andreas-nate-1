@@ -1,57 +1,57 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include "array_merge.h"
 #include "../mergesort/mergesort.h"
+#include <stdlib.h>
+#include <stdbool.h>
 
 int* array_merge(int num_arrays, int* sizes, int** values) {
-    // Debug: Print input parameters
-    printf("num_arrays: %d\n", num_arrays);
-    if (sizes == NULL) {
-        fprintf(stderr, "Error: sizes is NULL\n");
-        return NULL;
-    }
-    if (values == NULL) {
-        fprintf(stderr, "Error: values is NULL\n");
-        return NULL;
-    }
-
-    // Calculate the total number of elements in all arrays
-    int total_size = 0;
+    // Calculate the total number of elements
+    int total_elements = 0;
     for (int i = 0; i < num_arrays; i++) {
-        if (sizes[i] < 0) {
-            fprintf(stderr, "Error: sizes[%d] is negative\n", i);
-            return NULL;
-        }
-        total_size += sizes[i];
+        total_elements += sizes[i];
     }
 
-    // Handle the case where there are no elements in any of the arrays
-    if (total_size == 0) {
-        printf("Total size is 0, returning NULL\n");
-        return NULL;
-    }
+    // Allocate memory for a temporary array to hold all elements
+    int* temp_array = (int*)malloc(total_elements * sizeof(int));
+    int temp_index = 0;
 
-    // Allocate memory for the merged array
-    int *merged_array = (int *)malloc(total_size * sizeof(int));
-    if (merged_array == NULL) {
-        fprintf(stderr, "Error: Memory allocation failed\n");
-        return NULL; // Memory allocation failed
-    }
-
-    // Copy elements from all arrays into the merged array
-    int current_index = 0;
+    // Copy all elements into the temporary array
     for (int i = 0; i < num_arrays; i++) {
-        if (values[i] == NULL) {
-            fprintf(stderr, "Error: values[%d] is NULL\n", i);
-            free(merged_array);
-            return NULL;
-        }
         for (int j = 0; j < sizes[i]; j++) {
-            merged_array[current_index++] = values[i][j];
+            temp_array[temp_index++] = values[i][j];
         }
     }
 
-    // Sort the merged array using mergesort
-    mergesort(total_size, merged_array);
+    // Sort the temporary array
+    mergesort(total_elements, temp_array);
 
-    return merged_array;
+    // Count unique elements
+    int unique_count = 0;
+    if (total_elements > 0) {
+        unique_count = 1; // First element is always unique
+        for (int i = 1; i < total_elements; i++) {
+            if (temp_array[i] != temp_array[i - 1]) {
+                unique_count++;
+            }
+        }
+    }
+
+    // Allocate memory for the result array
+    int* result = (int*)malloc((unique_count + 1) * sizeof(int));
+    result[0] = unique_count;
+
+    // Copy unique elements into the result array
+    int result_index = 1;
+    if (total_elements > 0) {
+        result[result_index++] = temp_array[0];
+        for (int i = 1; i < total_elements; i++) {
+            if (temp_array[i] != temp_array[i - 1]) {
+                result[result_index++] = temp_array[i];
+            }
+        }
+    }
+
+    // Free the temporary array
+    free(temp_array);
+
+    return result;
 }
