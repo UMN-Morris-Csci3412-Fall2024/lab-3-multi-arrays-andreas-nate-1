@@ -3,11 +3,22 @@
 #include "../mergesort/mergesort.h"
 
 int* array_merge(int num_arrays, int* sizes, int** values) {
+    // Debug: Print input parameters
+    printf("num_arrays: %d\n", num_arrays);
+    if (sizes == NULL) {
+        fprintf(stderr, "Error: sizes is NULL\n");
+        return NULL;
+    }
+    if (values == NULL) {
+        fprintf(stderr, "Error: values is NULL\n");
+        return NULL;
+    }
+
     // Calculate the total number of elements in all arrays
     int total_size = 0;
     for (int i = 0; i < num_arrays; i++) {
-        if (sizes == NULL) {
-            fprintf(stderr, "Error: sizes[%d] is NULL\n", i);
+        if (sizes[i] < 0) {
+            fprintf(stderr, "Error: sizes[%d] is negative\n", i);
             return NULL;
         }
         total_size += sizes[i];
