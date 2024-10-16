@@ -12,6 +12,9 @@ int* array_merge(int num_arrays, int* sizes, int** values) {
 
     // Allocate memory for a temporary array to hold all elements
     int* temp_array = (int*)malloc(total_elements * sizeof(int));
+    if (temp_array == NULL) {
+        return NULL; // Memory allocation failed
+    }
     int temp_index = 0;
 
     // Copy all elements into the temporary array
@@ -37,6 +40,10 @@ int* array_merge(int num_arrays, int* sizes, int** values) {
 
     // Allocate memory for the result array
     int* result = (int*)malloc((unique_count + 1) * sizeof(int));
+    if (result == NULL) {
+        free(temp_array); // Free the temporary array if memory allocation for result fails
+        return NULL; // Memory allocation failed
+    }
     result[0] = unique_count;
 
     // Copy unique elements into the result array
